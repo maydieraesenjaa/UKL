@@ -5,6 +5,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '@prisma/client';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { CreateOrderDto, PaymentDto } from './order.dto';
 
 @ApiTags('Order')
 @ApiBearerAuth()
@@ -16,7 +17,7 @@ export class OrderController {
   @Roles(Role.ADMIN, Role.USER)
   @Post()
   @ApiOperation({ summary: 'Add order'})
-  createOrder(@Req() req: any, @Body() body: { items: { menuId: number; quantity: number }[] }) {
+  createOrder(@Req() req: any, @Body() body: CreateOrderDto) {
     const userId = req.user.userId; 
     return this.orderService.createOrder(userId, body);
   }
@@ -26,7 +27,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Payment orders with id'})
   processPayment(
     @Param('id') id: string,
-    @Body() body: { amountPaid: number; paymentMethod: string }
+    @Body() body: PaymentDto
   ) {
     return this.orderService.processPayment(Number(id), body);
   }
