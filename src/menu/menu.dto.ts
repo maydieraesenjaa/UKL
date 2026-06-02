@@ -10,6 +10,9 @@ export class CreateMenuDto {
   @ApiProperty({ example: 'Food', description: 'Menu category' })
   category!: string;
 
+  @ApiProperty({ example: 'Nasi goreng pedas dengan toping telur mata sapi dan ayam suwir', description: 'Menu description' })
+  description!: string;
+
   @ApiProperty({ type: 'string', format: 'binary', description: 'File image menu' })
   image!: any;
 }
@@ -23,6 +26,9 @@ export class UpdateMenuDto {
 
   @ApiProperty({ example: 'Food', description: 'New category', required: false })
   category?: string;
+
+  @ApiProperty({ example: 'Nasi goreng dengan bumbu seafood dan udang segar', description: 'New description', required: false })
+  description?: string;
 
   @ApiProperty({ type: 'string', format: 'binary', description: 'New file image', required: false })
   image?: any;
