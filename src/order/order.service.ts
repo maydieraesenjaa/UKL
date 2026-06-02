@@ -108,4 +108,14 @@ export class OrderService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  async deleteOrder(id: number) {
+  await this.prisma.orderDetail.deleteMany({
+    where: { orderId: id },
+  });
+
+  return this.prisma.order.delete({
+    where: { id: id },
+  });
+}
 }

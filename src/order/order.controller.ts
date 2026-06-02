@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Param, Get, Delete } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -30,5 +30,11 @@ export class OrderController {
   @Get('history')
   getHistory() {
     return this.orderService.getHistory();
+  }
+
+  @Roles(Role.ADMIN)
+  @Delete(':id')
+  removeOrder(@Param('id') id: string) {
+    return this.orderService.deleteOrder(Number(id));
   }
 }
