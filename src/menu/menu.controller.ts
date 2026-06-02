@@ -7,7 +7,8 @@ import { Role } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagger';
+import { CreateMenuDto, UpdateMenuDto } from './menu.dto';
 
 @ApiTags('Menu')
 @ApiBearerAuth()
@@ -19,6 +20,7 @@ export class MenuController {
   @Roles(Role.ADMIN)
   @Post()
   @ApiOperation({ summary: 'Add menu (ADMIN only)'})
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -33,7 +35,7 @@ export class MenuController {
       }),
     }),
   )
-  create(@Body() body: any, @UploadedFile() file: Express.Multer.File) {
+  create(@Body() body: CreateMenuDto, @UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('Menu photos must be uploaded!');
     }
@@ -58,7 +60,8 @@ export class MenuController {
   @Roles(Role.ADMIN)
   @Patch(':id')
   @ApiOperation({ summary: 'Update menu data with id'})
-  update(@Param('id') id: string, @Body() body: any) {
+  @ApiConsumes('multipart/form-data')
+  update(@Param('id') id: string, @Body() body: UpdateMenuDto) {
     return this.menuService.update(Number(id), body);
   }
 
