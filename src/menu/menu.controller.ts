@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '@prisma/client';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('menu')
@@ -12,8 +15,26 @@ export class MenuController {
 
   @Roles(Role.ADMIN)
   @Post()
-  create(@Body() body: any) {
-    return this.menuService.create(body);
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          
+          callback(null, filename); 
+        },
+      }),
+    }),
+  )
+  create(@Body() body: any, @UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('Menu photos must be uploaded!');
+    }
+    
+    return this.menuService.create(body, file.filename);
   }
 
   @Roles(Role.ADMIN, Role.USER)

@@ -5,13 +5,14 @@ import { PrismaService } from '../prisma/prisma.service';
 export class MenuService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: any) {
+  async create(data: any, filename: string) {
     return this.prisma.menu.create({ 
       data: {
         name: data.name,
         description: data.description,
         price: Number(data.price),
         isAvailable: data.isAvailable ?? true,
+        image: filename
       }
     });
   }
