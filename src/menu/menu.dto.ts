@@ -7,9 +7,6 @@ export class CreateMenuDto {
   @ApiProperty({ example: 15000, description: 'Menu price' })
   price!: number;
 
-  @ApiProperty({ example: 'Food', description: 'Menu category' })
-  category!: string;
-
   @ApiProperty({ example: 'Nasi goreng pedas dengan toping telur mata sapi dan ayam suwir', description: 'Menu description' })
   description!: string;
 
@@ -24,8 +21,6 @@ export class UpdateMenuDto {
   @ApiProperty({ example: 18000, description: 'New price', required: false })
   price?: number;
 
-  @ApiProperty({ example: 'Food', description: 'New category', required: false })
-  category?: string;
 
   @ApiProperty({ example: 'Nasi goreng dengan bumbu seafood dan udang segar', description: 'New description', required: false })
   description?: string;
